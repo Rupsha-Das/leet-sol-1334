@@ -1,0 +1,27 @@
+class Solution:
+    def findTheCity(self, n: int, edges: List[List[int]], distanceThreshold: int) -> int:
+        def get_count(city):
+            weights = [float('inf')] * n
+            weights[city] = 0
+            q = deque([(city, 0)])
+
+            while q:
+                cur, dist = q.popleft()
+                for next, next_dist in map[cur]:
+                    next_weight = next_dist + dist
+                    if next_weight < weights[next]:
+                        weights[next] = next_weight
+                        if next_weight <= distanceThreshold:
+                            q.append((next, next_weight))
+
+            return sum(w <= distanceThreshold for w in weights) - 1
+
+        map = defaultdict(list)
+        for a, b, w in edges:
+            map[a].append((b, w))
+            map[b].append((a, w))
+
+        counts = [get_count(i) for i in range(n)]
+        print(counts)
+
+        return min((i for i in range(n)), key = lambda x: (get_count(x), -x))
